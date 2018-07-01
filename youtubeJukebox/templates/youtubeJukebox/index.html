@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Youtube Jukebox</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="jumbotron text-center">
+  <h1>JUKEBOX</h1>
+  <p>A simple jukebox application<br><kbd>Refresh page to get new links.</kbd></p> 
+</div>
+
+
+<div class="container">
+   <div class="panel panel-default">
+    <div class="panel-heading">Videos are played in order of votes</div>
+    <div class="panel-body"><iframe width="720" height="405" src="https://www.youtube.com/embed/{{ first }}?autoplay=1&playlist={{ last }}"frameborder="0" allowfullscreen></div>
+  </div>
+</div>
+
+
