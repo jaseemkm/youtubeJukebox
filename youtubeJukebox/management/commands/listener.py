@@ -5,37 +5,40 @@ from urllib.parse import urlparse,parse_qs
 import re
 import time
 
-class Command(BaseCommand):
-    def handle(self,**option):
-    	session = start_listening()
+            
+def get_id(link):
+	urlData = urlparse(link)
+	query = parse_qs(urlData.query)
+	videoId = query["v"][0]
+	return videoId
+
+def add_item(link):
+	videoId = get_id(link)
+	idList = Video.objects.order_by('vote')
+	List = { q.videoId for q in idList }
+	if videoId not in List:
+		values = Video(url = link, videoId = videoId)
+		values.save()
+		print("\nItem added to database")
+	else :
+		print("\nValue already exists")
 
 def start_listening():
 	token = 'xoxb-392118745879-390358916160-HUJ3Tc7ldBHUomAQDUQYyxV9'
-	link_format=r"^<((https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+)>$"
-	slack_client = SlackClient(token)
-	if slack_client.rtm_connect():
+	linkFormat=r"^<((https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+)>$"
+	slackClient = SlackClient(token)
+	if slackClient.rtm_connect():
 		while True:
-			events = slack_client.rtm_read()
+			events = slackClient.rtm_read()
 			print(events)
 			for event in events:
 				if event['type']=='message' and "hidden" not in event :
-					match = re.search(link_format, event['text'])
+					match = re.search(linkFormat, event['text'])
 					if match :
 						link = match.group(1)
 						add_item(link)
 			time.sleep(1)
 
-
-            
-def add_item(link):
-	videoId = get_id(link)
-	values = Video(url = link, videoId = videoId)
-	values.save()
-	print("\nItem added to database")
-
-def get_id(link):
-	url_data = urlparse(link)
-	query = parse_qs(url_data.query)
-	videoId = query["v"][0]
-	return videoId
-
+class Command(BaseCommand):
+    def handle(self,**option):
+    	session = start_listening()
