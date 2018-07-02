@@ -19,6 +19,7 @@
 <div class="container">
    <div class="panel panel-default">
     <div class="panel-heading">Videos are played in order of votes</div>
+    <div class="panel-heading"><a href='{% url 'slack_auth' %}'>Get slacked</a></div>
     <div class="panel-body"><iframe width="720" height="405" src="https://www.youtube.com/embed/{{ first }}?autoplay=1&playlist={{ last }}"frameborder="0" allowfullscreen></div>
   </div>
 </div>

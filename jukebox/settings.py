@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'youtubeJukebox',
+    'django_slack_oauth',
 
 ]
 
@@ -101,7 +102,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+#Slack credentials
+SLACK_CLIENT_ID = '392118745879.391958238662'
+SLACK_CLIENT_SECRET = '334f20268e6d2e608db3f651e9c0522e'
+SLACK_SCOPE = 'admin,bot'
+#SLACK_SUCCESS_REDIRECT_URL = 'http://127.0.0.1:8000/youtubeJukebox/'
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
