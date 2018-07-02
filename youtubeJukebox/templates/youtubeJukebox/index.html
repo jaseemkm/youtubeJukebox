@@ -19,8 +19,22 @@
 <div class="container">
    <div class="panel panel-default">
     <div class="panel-heading">Videos are played in order of votes</div>
-    <div class="panel-heading"><a href='{% url 'slack_auth' %}'>Get slacked</a></div>
-    <div class="panel-body"><iframe width="720" height="405" src="https://www.youtube.com/embed/{{ first }}?autoplay=1&playlist={{ last }}"frameborder="0" allowfullscreen></div>
+    <table>
+      <tr>
+        <td>
+    <div class="panel-body"><iframe width="720" height="405" src="https://www.youtube.com/embed/{{ first }}?autoplay=1&playlist={{ last }}"frameborder="0" allowfullscreen>
+    </iframe>
+  </div>
+</td>
+<td>
+      <div class="panel-heading text-center"><a href='{% url 'slack_auth' %}'><img src="https://api.slack.com/img/sign_in_with_slack.png" /></a></div>
+      <div>
+        <a href="/youtubeJukebox/vote?vid=hs-06uTmRoM" class="btn btn-info" role="button">Link Button</a>
+      </div>
+    </td>
+  </tr>
+    </table>
+    </div>
   </div>
 </div>
 
