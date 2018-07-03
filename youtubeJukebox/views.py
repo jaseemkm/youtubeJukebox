@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from youtubeJukebox.models import Video, User
+from youtubeJukebox.models import Video, User, Vote
 from django_slack_oauth.models import SlackUser
 
 
@@ -22,6 +22,8 @@ def index(request):
 
 def vote(request):
 	vid = request.GET['vid']
+	values = Vote(user_id=request.session['userid'],videoId=vid)
+	values.save()
 	data = Video.objects.get(videoId=vid)
 	data.vote+=1
 	data.save()
@@ -44,6 +46,7 @@ def register_user(request, api_data):
 		else :
 			print("\nUser already exist")
 	request.session['user'] = api_data['user']['name']
+	request.session['userid'] = api_data['user']['id']
 	request.session['access_token'] = api_data['access_token']
 
 

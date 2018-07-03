@@ -13,5 +13,12 @@ class User(models.Model):
     user = models.CharField(max_length=100,unique=True)
     user_id = models.CharField(max_length=100,unique=True)
 
-    def is_slacked(self):
-        return self.access_token
+    def __str__(self):
+        return self.user_id
+
+class Vote(models.Model):
+	user_id = models.CharField(max_length=100)
+	videoId = models.CharField(max_length=100)
+	def __str__(self):
+		return self.user_id, self.videoId
+	
