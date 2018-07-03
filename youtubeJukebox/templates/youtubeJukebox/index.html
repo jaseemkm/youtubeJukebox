@@ -6,44 +6,115 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="jumbotron text-center">
-  <h1>JUKEBOX</h1>
-  <p>A simple jukebox application<br><kbd>Refresh page to get new links.</kbd></p> 
-</div>
-
-
-<div class="container">
-   <div class="panel panel-default">
-    <div class="panel-heading">Videos are played in order of votes</div>
-    <table>
-      <tr>
-        <td>
-    <div class="panel-body"><iframe width="720" height="405" src="https://www.youtube.com/embed/{{ first }}?autoplay=1&playlist={{ last }}"frameborder="0" allowfullscreen>
-    </iframe>
+  <div class="jumbotron text-center">
+    <h1>JUKEBOX</h1>
+    <p>A simple jukebox application<br><kbd>Refresh page to get new links.</kbd></p> 
   </div>
-</td>
-<td>
-      {% if 'user' in request.session %}
 
-      <div class="panel-heading">welcome {{ request.session.user}}</div>
-      <div>
-        <a href="/youtubeJukebox/vote?vid=hs-06uTmRoM" class="btn btn-info" role="button">Link Button</a>
-        <a href="/youtubeJukebox/logout" class="btn btn-info" role="button">logout</a>
-        
+  <div class="container">
+     <div class="panel panel-default">
+      <div class="panel-heading">Videos are played in order of votes</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-9">
+
+            <div id="player"></div>
+
+            <h4>Playlist</h4>
+
+            {% for video in videos %}
+              <div>
+                <img src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="img img-thumbnail" style="width: 200px ">
+                {{ video.vote }} votes
+
+                <button type="button" class="btn btn-default play-video" data-index="{{ forloop.counter0 }}"><i class="glyphicon glyphicon-play"></i> Play</button>
+              </div>
+            {% endfor %}
+
+          </div>
+          <div class="col-md-3">
+            {% if 'user' in request.session %}
+              <i class="glyphicon glyphicon-user"></i> {{ request.session.user}} <a href="/youtubeJukebox/logout" class="btn btn-default" role="button">Log out <i class="glyphicon glyphicon-log-out"></i></a>
+
+              <hr>
+
+              <div>
+                <button type="button" id="vote" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-chevron-up"></i> <span id="vote_count"></span> Vote</button>
+              </div>
+            {% else %} 
+              <a href='{% url 'slack_auth' %}'><img src="https://api.slack.com/img/sign_in_with_slack.png" /></a>
+            {% endif %}
+          </div>
+        </div>
       </div>
-      {% else %} 
-      <div class="panel-heading text-center"><a href='{% url 'slack_auth' %}'><img src="https://api.slack.com/img/sign_in_with_slack.png" /></a></div>
-      {% endif %}
-      
-    </td>
-  </tr>
-    </table>
     </div>
   </div>
-</div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+    // List of videos as js object
+    var videos = {{ video_json | safe }};
+
+    // Youtube logic
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+    var currentPlaying = 0;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        width: '720',
+        height: '405',
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      playVideo(videos[0])
+    }
+
+    function onPlayerStateChange(event) {        
+        if(event.data === 0) {
+          if (currentPlaying < (videos.length - 1)) {
+            currentPlaying++
+          } else {
+            currentPlaying = 0
+          }
+
+          playVideo(videos[currentPlaying])
+        }
+    }
+
+    function playVideo(videoData) {
+      $('#vote_count').html(videoData.vote)
+      player.loadVideoById(videoData.videoId)
+    }
+
+
+    $('.play-video').click(function () {
+      var index = parseInt($(this).data('index'))
+      currentPlaying = index
+
+      playVideo(videos[index])
+    })
+
+    $('#vote').click(function () {
+      var id = videos[currentPlaying].videoId
+      window.location = '/youtubeJukebox/vote?vid=' + id
+    })
+  </script>
+</body>
+</html>
 
 

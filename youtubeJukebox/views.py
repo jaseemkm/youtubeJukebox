@@ -2,18 +2,19 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from youtubeJukebox.models import Video, User, Vote
 from django_slack_oauth.models import SlackUser
-
+from django.core import serializers
+import json
 
 def index(request):
-	if request.session.test_cookie_worked():
-		print (">>>> TEST COOKIE WORKED!")
-		request.session.delete_test_cookie()
-	url_list = Video.objects.all()
-	newlist = sorted(url_list, key=lambda x: x.vote, reverse=True)
-	k=[x.videoId for x in newlist] 
-	first=str(k[0])
-	last=','.join(k)
-	context = {'first':first,'last':last}
+	videos = Video.objects.order_by('-vote').all()
+
+	# newlist = sorted(url_list, key=lambda x: x.vote, reverse=True)
+	# videos = [x.videoId for x in newlist] 
+
+	video_json = json.dumps([item['fields'] for item in serializers.serialize('python', videos)])
+
+	context = {'videos': videos, 'video_json': video_json}
+
 	response = render (request, 'youtubeJukebox/index.html', context)
 	if 'user' in request.session :
 		print("jaseem")
