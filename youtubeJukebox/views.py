@@ -8,13 +8,11 @@ import json
 def index(request):
 	videos = Video.objects.order_by('-votes').all()
 	video_json = json.dumps([item['fields'] for item in serializers.serialize('python', videos)])
-	print(video_json)
-
+	
 	context = {'videos': videos, 'video_json': video_json}
 
 	response = render (request, 'youtubeJukebox/index.html', context)
 	if 'user' in request.session :
-		print("jaseem")
 		response.set_cookie('user',request.session['user'] )
 	return response
 
@@ -24,16 +22,19 @@ def vote(request):
 	
 	user = User.objects.get(user_id=userId)
 	video = Video.objects.get(videoId=vid)
-	video.votes += 1
-	video.save()
+
+	votes = Vote.objects.all().filter(user=user, video=video)
 	
-	vote = Vote(user=user, video=video)
-	vote.save()
+	if(len(votes) == 0):
+		video.votes += 1
+		video.save()
+		vote = Vote(user=user, video=video)
+		vote.save()
+		
 	return redirect('/youtubeJukebox')
 	
 
 def debug_oauth_request(request, api_data):
-	print(api_data)
 	request.session['foo'] = 'bar'
 	return request, api_data
 
