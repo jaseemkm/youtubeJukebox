@@ -8,3 +8,10 @@ class Video(models.Model):
 
 	def __str__(self):
 		return self.videoId
+
+class User(models.Model):
+    user = models.CharField(max_length=100,unique=True)
+    user_id = models.CharField(max_length=100,unique=True)
+
+    def is_slacked(self):
+        return self.access_token
