@@ -24,7 +24,7 @@ def add_item(link):
 		print("\nValue already exists")
 
 def start_listening():
-	token = 'xoxb-392118745879-390358916160-HUJ3Tc7ldBHUomAQDUQYyxV9'
+	token = 'xoxb-392118745879-390358916160-oNo2I2FgtWfqCeb8KNpOArR2'
 	linkFormat=r"^<((https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+)>$"
 	slackClient = SlackClient(token)
 	if slackClient.rtm_connect():
