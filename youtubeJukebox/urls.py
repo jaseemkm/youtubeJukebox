@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     url(r'^vote/$', views.vote, name='vote'),
+    url(r'logout', views.logout, name='logout'),
 ]

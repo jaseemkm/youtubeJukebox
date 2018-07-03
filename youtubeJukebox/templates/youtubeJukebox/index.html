@@ -28,14 +28,17 @@
 </td>
 <td>
       {% if 'user' in request.session %}
+
       <div class="panel-heading">welcome {{ request.session.user}}</div>
+      <div>
+        <a href="/youtubeJukebox/vote?vid=hs-06uTmRoM" class="btn btn-info" role="button">Link Button</a>
+        <a href="/youtubeJukebox/logout" class="btn btn-info" role="button">logout</a>
+        
+      </div>
       {% else %} 
       <div class="panel-heading text-center"><a href='{% url 'slack_auth' %}'><img src="https://api.slack.com/img/sign_in_with_slack.png" /></a></div>
       {% endif %}
-      <div>
-        <a href="/youtubeJukebox/vote?vid=hs-06uTmRoM" class="btn btn-info" role="button">Link Button</a>
-        
-      </div>
+      
     </td>
   </tr>
     </table>

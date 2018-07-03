@@ -48,3 +48,7 @@ def register_user(request, api_data):
 
 
 	return request, api_data
+
+def logout(request):
+	del request.session['user']
+	return redirect('/youtubeJukebox')
