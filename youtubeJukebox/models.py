@@ -4,7 +4,7 @@ from django.db import models
 class Video(models.Model):
 	url = models.URLField()
 	videoId = models.CharField(max_length=100,unique=True)
-	vote = models.IntegerField(default=0)
+	votes = models.IntegerField(default=0)	
 
 	def __str__(self):
 		return self.videoId
@@ -17,8 +17,9 @@ class User(models.Model):
         return self.user_id
 
 class Vote(models.Model):
-	user_id = models.CharField(max_length=100)
-	videoId = models.CharField(max_length=100)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	video = models.ForeignKey(Video, on_delete=models.CASCADE)
+	
 	def __str__(self):
-		return self.user_id, self.videoId
+		return self.user, self.video
 	

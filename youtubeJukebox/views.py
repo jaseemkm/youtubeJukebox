@@ -6,12 +6,16 @@ from django.core import serializers
 import json
 
 def index(request):
-	videos = Video.objects.order_by('-vote').all()
+	videos = Video.objects.order_by('-votes').all()
+	#videos = Video.objects.all()
+	#print(str(videos[0].vote))
 
 	# newlist = sorted(url_list, key=lambda x: x.vote, reverse=True)
 	# videos = [x.videoId for x in newlist] 
 
+	#data = serializers.serialize("xml", SomeModel.objects.all())
 	video_json = json.dumps([item['fields'] for item in serializers.serialize('python', videos)])
+	print(video_json)
 
 	context = {'videos': videos, 'video_json': video_json}
 
@@ -23,11 +27,15 @@ def index(request):
 
 def vote(request):
 	vid = request.GET['vid']
-	values = Vote(user_id=request.session['userid'],videoId=vid)
-	values.save()
-	data = Video.objects.get(videoId=vid)
-	data.vote+=1
-	data.save()
+	userId = request.session['userid']
+	
+	user = User.objects.get(user_id=userId)
+	video = Video.objects.get(videoId=vid)
+	video.votes += 1
+	video.save()
+	
+	vote = Vote(user=user, video=video)
+	vote.save()
 	return redirect('/youtubeJukebox')
 	
 

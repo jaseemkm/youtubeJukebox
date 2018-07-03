@@ -27,7 +27,7 @@
             {% for video in videos %}
               <div>
                 <img src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="img img-thumbnail" style="width: 200px ">
-                {{ video.vote }} votes
+                {{ video.votes }} votes
 
                 <button type="button" class="btn btn-default play-video" data-index="{{ forloop.counter0 }}"><i class="glyphicon glyphicon-play"></i> Play</button>
               </div>
@@ -97,7 +97,7 @@
     }
 
     function playVideo(videoData) {
-      $('#vote_count').html(videoData.vote)
+      $('#vote_count').html(videoData.votes)
       player.loadVideoById(videoData.videoId)
     }
 
