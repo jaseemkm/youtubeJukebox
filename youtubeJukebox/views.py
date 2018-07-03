@@ -7,13 +7,6 @@ import json
 
 def index(request):
 	videos = Video.objects.order_by('-votes').all()
-	#videos = Video.objects.all()
-	#print(str(videos[0].vote))
-
-	# newlist = sorted(url_list, key=lambda x: x.vote, reverse=True)
-	# videos = [x.videoId for x in newlist] 
-
-	#data = serializers.serialize("xml", SomeModel.objects.all())
 	video_json = json.dumps([item['fields'] for item in serializers.serialize('python', videos)])
 	print(video_json)
 
