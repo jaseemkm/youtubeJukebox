@@ -5,13 +5,13 @@ from urllib.parse import urlparse,parse_qs
 import re
 import time
 
-            
+ #YouTube video IDs form link          
 def get_id(link):
 	urlData = urlparse(link)
 	query = parse_qs(urlData.query)
 	videoId = query["v"][0]
 	return videoId
-
+#Adding values to database
 def add_item(link):
 	videoId = get_id(link)
 	idList = Video.objects.order_by('vote')
@@ -24,15 +24,18 @@ def add_item(link):
 		print("\nValue already exists")
 
 def start_listening():
+	#Bot User OAuth Access Token
 	token = 'xoxb-392118745879-390358916160-oNo2I2FgtWfqCeb8KNpOArR2'
 	linkFormat=r"^<((https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+)>$"
 	slackClient = SlackClient(token)
+	#Reading messages from slack 
 	if slackClient.rtm_connect():
 		while True:
 			events = slackClient.rtm_read()
 			print(events)
 			for event in events:
 				if event['type']=='message' and "hidden" not in event :
+					#Matching YouTube links
 					match = re.search(linkFormat, event['text'])
 					if match :
 						link = match.group(1)

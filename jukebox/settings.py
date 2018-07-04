@@ -102,13 +102,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#Slack credentials
+#Slack cofiguration
 SLACK_CLIENT_ID = '392118745879.391958238662'
 SLACK_CLIENT_SECRET = '334f20268e6d2e608db3f651e9c0522e'
 SLACK_SCOPE = 'identity.basic'
 SLACK_SUCCESS_REDIRECT_URL = 'http://localhost:8000/'
 SLACK_PIPELINES = [
-    'youtubeJukebox.views.debug_oauth_request',
+    'youtubeJukebox.views.oauth_request_session',
     'youtubeJukebox.views.register_user',
 ]
 # Internationalization
