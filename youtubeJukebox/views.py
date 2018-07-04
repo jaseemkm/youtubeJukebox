@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from youtubeJukebox.models import Video, User, Vote
 from django_slack_oauth.models import SlackUser
 from django.core import serializers
@@ -30,8 +30,11 @@ def vote(request):
 		video.save()
 		vote = Vote(user=user, video=video)
 		vote.save()
-		
-	return redirect('/youtubeJukebox')
+
+	return JsonResponse({
+		'result': 'success',
+		'votes': video.votes
+	})
 	
 
 def debug_oauth_request(request, api_data):
@@ -57,4 +60,4 @@ def register_user(request, api_data):
 
 def logout(request):
 	del request.session['user']
-	return redirect('/youtubeJukebox')
+	return redirect('/')

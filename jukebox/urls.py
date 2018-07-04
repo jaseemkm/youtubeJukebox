@@ -19,6 +19,6 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('youtubeJukebox/', include('youtubeJukebox.urls')),
+    path('', include('youtubeJukebox.urls')),
     url(r'^slack/', include('django_slack_oauth.urls')),
 ]

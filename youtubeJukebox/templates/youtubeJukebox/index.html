@@ -6,48 +6,103 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+
+  <style type="text/css">
+    .jumbotron {
+      background: #000;
+    }
+
+    .navbar-default {
+      background: #FFF;
+      border: none;
+    }
+
+    .navbar-header h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 60px;
+      text-transform: uppercase;
+      padding: 10px;
+      background: -webkit-linear-gradient(gold, blue);
+      color: #FFF;
+    }
+
+    .navbar-right {
+      margin-top: 25px;
+    }
+  </style>
 </head>
 <body>
-  <div class="jumbotron text-center">
+  <!-- <div class="jumbotron text-center">
     <h1>JUKEBOX</h1>
     <p>A simple jukebox application<br><kbd>Refresh page to get new links.</kbd></p> 
-  </div>
+  </div> -->
 
   <div class="container">
-     <div class="panel panel-default">
-      <div class="panel-heading">Videos are played in order of votes</div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-9">
 
-            <div id="player"></div>
-
-            <h4>Playlist</h4>
-
-            {% for video in videos %}
-              <div>
-                <img src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="img img-thumbnail" style="width: 200px ">
-                {{ video.votes }} votes
-
-                <button type="button" class="btn btn-default play-video" data-index="{{ forloop.counter0 }}"><i class="glyphicon glyphicon-play"></i> Play</button>
-              </div>
-            {% endfor %}
-
-          </div>
-          <div class="col-md-3">
+    <nav class="navbar navbar-default">
+        <div class="navbar-header">
+          <h1>Jukebox</h1>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
             {% if 'user' in request.session %}
-              <i class="glyphicon glyphicon-user"></i> {{ request.session.user}} <a href="/youtubeJukebox/logout" class="btn btn-default" role="button">Log out <i class="glyphicon glyphicon-log-out"></i></a>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> {{ request.session.user}} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/logout">Log out <i class="glyphicon glyphicon-log-out"></i></a></li>
+              </ul>
+            </li>
+            {% else %} 
+            <li>
+              <a href='{% url 'slack_auth' %}'><img src="https://api.slack.com/img/sign_in_with_slack.png" style="height: 30px;" /></a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+    </nav>
 
-              <hr>
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="jumbotron text-center">
+          <div id="player"></div>            
+        </div>
 
+        <div class="row">
+          <div class="col-sm-9">
+            <h3 id="title"></h3>    
+          </div>
+          <div class="col-sm-3 text-right">
+            {% if 'user' in request.session %}
               <div>
                 <button type="button" id="vote" class="btn btn-info btn-lg"><i class="glyphicon glyphicon-chevron-up"></i> <span id="vote_count"></span> Vote</button>
               </div>
             {% else %} 
-              <a href='{% url 'slack_auth' %}'><img src="https://api.slack.com/img/sign_in_with_slack.png" /></a>
+              <div>
+                <button type="button" class="btn btn-default btn-lg" disabled><i class="glyphicon glyphicon-chevron-up"></i> <span id="vote_count"></span> Vote</button>
+                <br><br>
+                <i class="glyphicon glyphicon-alert"></i> Sign in to vote
+              </div>
             {% endif %}
           </div>
         </div>
+
+        <hr>
+      </div>
+
+      <div class="col-lg-3">
+        {% for video in videos %}
+
+        <div class="thumbnail">
+          <img src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="img-responsive">
+          <div class="caption">
+            <strong>{{ video.votes }} votes</strong>
+            <button type="button" class="btn btn-default play-video pull-right" data-index="{{ forloop.counter0 }}"><i class="glyphicon glyphicon-play"></i> Play</button>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -71,8 +126,8 @@
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        width: '720',
-        height: '405',
+        width: '100%',
+        height: '400',
         events: {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange
@@ -85,7 +140,7 @@
     }
 
     function onPlayerStateChange(event) {        
-        if(event.data === 0) {
+        if (event.data === 0) {
           if (currentPlaying < (videos.length - 1)) {
             currentPlaying++
           } else {
@@ -93,11 +148,17 @@
           }
 
           playVideo(videos[currentPlaying])
+        } else if (event.data === 1) {
+          if (player.getVideoData()) {
+            $('#title').text(player.getVideoData().title)
+          }
         }
     }
 
     function playVideo(videoData) {
       $('#vote_count').html(videoData.votes)
+      $('#vote').attr('disabled', false)
+      $('#title').text('')
       player.loadVideoById(videoData.videoId)
     }
 
@@ -107,11 +168,28 @@
       currentPlaying = index
 
       playVideo(videos[index])
+
+      $('html, body').animate({
+          scrollTop: 0
+      }, 200);
     })
 
     $('#vote').click(function () {
       var id = videos[currentPlaying].videoId
-      window.location = '/youtubeJukebox/vote?vid=' + id
+
+      $.ajax({
+        method: 'GET',
+        url: '/vote',
+        data: { vid: id }
+      })
+      .done(function(response) {
+        $('#vote_count').html(response.votes)
+        $('#vote').attr('disabled', true)
+      })
+      .fail(function() {
+        window.alert('Could not vote')
+      })
+
     })
   </script>
 </body>
