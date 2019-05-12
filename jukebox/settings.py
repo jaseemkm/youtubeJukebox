@@ -11,10 +11,14 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import environ
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -103,8 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 #Slack cofiguration
-SLACK_CLIENT_ID = '392118745879.391958238662'
-SLACK_CLIENT_SECRET = '334f20268e6d2e608db3f651e9c0522e'
+SLACK_CLIENT_ID = env('SLACK_CLIENT_ID')
+SLACK_CLIENT_SECRET = env('SLACK_CLIENT_SECRET')
+ACCESS_TOKEN = env('ACCESS_TOKEN')
 SLACK_SCOPE = 'identity.basic'
 SLACK_SUCCESS_REDIRECT_URL = 'http://localhost:8000/'
 SLACK_PIPELINES = [

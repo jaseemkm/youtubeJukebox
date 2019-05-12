@@ -22,7 +22,7 @@ def vote(request):
 	video = Video.objects.get(videoId=vid)
 	# Make sure the user has not already voted
 	votes = Vote.objects.all().filter(user=user, video=video)
-	
+
 	if(len(votes) == 0):
 		video.votes += 1
 		video.save()
@@ -33,11 +33,10 @@ def vote(request):
 		'result': 'success',
 		'votes': video.votes
 	})
-	
+
 
 def oauth_request_session(request, api_data):
-	request.session['foo'] = 'bar'
-	return request, api_data
+		return request, api_data
 
 def register_user(request, api_data):
 	if api_data['ok']:

@@ -4,6 +4,7 @@ from youtubeJukebox.models import Video
 from urllib.parse import urlparse,parse_qs
 import re
 import time
+from jukebox.settings import ACCESS_TOKEN
 
  #YouTube video IDs form link          
 def get_id(link):
@@ -25,7 +26,7 @@ def add_item(link):
 
 def start_listening():
 	#Bot User OAuth Access Token
-	token = 'xoxb-392118745879-390358916160-oNo2I2FgtWfqCeb8KNpOArR2'
+	token = ACCESS_TOKEN
 	linkFormat=r"^<((https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+)>$"
 	slackClient = SlackClient(token)
 	#Reading messages from slack 
