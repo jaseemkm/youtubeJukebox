@@ -15,9 +15,8 @@ def get_id(link):
 #Adding values to database
 def add_item(link):
 	videoId = get_id(link)
-	idList = Video.objects.order_by('vote')
-	List = { q.videoId for q in idList }
-	if videoId not in List:
+	video = Video.objects.filter(videoId=videoId)
+	if not video:
 		values = Video(url = link, videoId = videoId)
 		values.save()
 		print("\nItem added to database")
@@ -33,7 +32,6 @@ def start_listening():
 	if slackClient.rtm_connect():
 		while True:
 			events = slackClient.rtm_read()
-			print(events)
 			for event in events:
 				if event['type']=='message' and "hidden" not in event :
 					#Matching YouTube links
