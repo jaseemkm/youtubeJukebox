@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from slackclient import SlackClient
 from youtubeJukebox.models import Video
-from urllib.parse import urlparse,parse_qs
+from urllib.parse import urlparse, parse_qs
 import re
 import time
 from jukebox.settings import ACCESS_TOKEN
