@@ -43,7 +43,7 @@ def start_listening():
                     if match:
                         link = match.group(1)
                         add_item(link)
-            time.sleep(1)
+            time.sleep(3)
 
 
 class Command(BaseCommand):
