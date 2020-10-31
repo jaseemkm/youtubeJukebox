@@ -23,7 +23,7 @@ def vote(request):
     # Make sure the user has not already voted
     votes = Vote.objects.filter(user=user, video=video)
 
-    if(len(votes) == 0):
+    if not votes.exists():
         video.votes += 1
         video.save()
         vote = Vote(user=user, video=video)
